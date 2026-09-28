@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Native English@Libda — จองวันเรียน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#154a8a;--navy2:#0f3d73;--sky:#5a7b9e;--bg:#f4f8fd;--gold:#f5b400;--line:#dbe7f5}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',system-ui,sans-serif;background:var(--bg);color:#1a2b3c;line-height:1.55}
+.wrap{max-width:780px;margin:0 auto;padding:0 16px 48px}
+.top{background:linear-gradient(135deg,var(--navy),#1f6bc0);color:#fff;text-align:center;padding:30px 16px 46px}
+.top h1{font-size:28px;font-weight:800;letter-spacing:-.3px}
+.top p{color:#cfe2f7;margin-top:4px;font-size:15px}
+.card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 2px 10px rgba(21,74,138,.08);margin-bottom:14px}
+.card:first-of-type{margin-top:-30px}
+h2{font-size:17px;color:var(--navy);display:flex;align-items:center;gap:9px;font-weight:800}
+.num{width:25px;height:25px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none}
+.hint{color:#8aa3bd;font-size:13px;margin:3px 0 14px 34px}
+.dayhead{font-weight:700;color:var(--navy);font-size:14px;margin:14px 0 7px;padding-left:2px;border-left:3px solid var(--gold);padding-left:9px}
+.slots{display:grid;gap:9px;grid-template-columns:1fr}
+@media(min-width:560px){.slots{grid-template-columns:1fr 1fr}}
+.slot{border:2px solid #e3ecf7;background:#fff;border-radius:13px;padding:12px;text-align:left;cursor:pointer;font-family:inherit;transition:.15s}
+.slot:hover{border-color:rgba(21,74,138,.4)}
+.slot.on{border-color:var(--gold);background:#fffbe9;box-shadow:0 2px 8px rgba(245,180,0,.2)}
+.slot .t{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.slot .time{font-weight:800;color:var(--navy);font-size:16px}
+.slot .sub{font-size:13px;color:var(--sky);margin-top:3px}
+.pill{border-radius:20px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap;background:#e6f7ec;color:#1b7a42}
+.pill.low{background:#fff0e0;color:#b45309}
+.grid{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+.full{grid-column:1/-1}
+label{display:block}
+label>span{display:block;font-size:13.5px;font-weight:700;color:#3d556e;margin-bottom:5px}
+input,select{width:100%;padding:11px 12px;border:1px solid #c9d8ea;border-radius:10px;font-size:15px;font-family:inherit;background:#fff;outline:none;transition:.15s}
+input:focus,select:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(21,74,138,.13)}
+#phone,#cfgPhone{letter-spacing:1.5px;font-weight:700}
+.btn{width:100%;padding:14px;border:0;border-radius:12px;background:var(--navy);color:#fff;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;margin-top:18px;transition:.15s}
+.btn:hover:not(:disabled){background:var(--navy2)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.sm{width:auto;padding:9px 20px;font-size:14px;margin-top:14px}
+.btn.gray{background:#8096ac}.btn.green{background:#159254}
+.msg{margin-top:12px;padding:12px;border-radius:10px;font-size:14px}
+.msg.ok{background:#e7f7ed;color:#12663a;border:1px solid #b9e6cb}
+.msg.err{background:#fdeceb;color:#a52e22;border:1px solid #f5c6c2}
+.contact{border:2px dashed rgba(21,74,138,.28);text-align:center}
+.contact .lb{font-size:13.5px;color:var(--sky)}
+.contact .ph{display:inline-block;font-size:30px;font-weight:800;color:var(--navy);letter-spacing:2px;margin-top:4px;text-decoration:none}
+.contact .ph:hover{text-decoration:underline}
+.contact .line{font-size:13.5px;color:var(--sky);margin-top:6px}
+.foot{text-align:center;font-size:12.5px;color:#9db1c6;margin-top:18px}
+.foot a{color:var(--sky)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#eef4fb;color:var(--navy);text-align:left;padding:9px;font-weight:700;white-space:nowrap}
+td{padding:9px;border-bottom:1px solid #edf3f9;white-space:nowrap}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.lnk{color:var(--navy);text-decoration:underline;cursor:pointer;background:none;border:0;font-family:inherit;font-size:13px}
+.lnk.red{color:#c0392b}
+.hide{display:none!important}
+.demo{background:#fff6dc;border-bottom:1px solid #f0dfa8;color:#7a5c00;font-size:13px;text-align:center;padding:8px 14px}
+.center{display:flex;min-height:100vh;align-items:center;justify-content:center;padding:16px}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:#e6f7ec;color:#1b7a42}
+.badge.off{background:#f1f5f9;color:#64748b}
+</style>
+</head>
+<body>
+
+<div id="demoBar" class="demo hide">
+  โหมดทดลอง (รันแบบ Local ในเครื่อง) — ข้อมูลจะเชื่อมต่อกับ Cloudflare D1 เมื่ออัปขึ้น Cloudflare Pages
+</div>
+
+<!-- ══════════ หน้าจอง ══════════ -->
+<div id="pageBook">
+  <header class="top">
+    <h1>Native English@Libda</h1>
+    <p>ลงทะเบียนจองวันและเวลาเรียน</p>
+  </header>
+
+  <div class="wrap">
+    <section class="card">
+      <h2><span class="num">1</span>เลือกวันและเวลาเรียน</h2>
+      <p class="hint">แตะที่รอบเรียนที่ต้องการ</p>
+      <div id="slotArea">กำลังโหลด...</div>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">2</span>ข้อมูลผู้เรียน</h2>
+      <p class="hint">ช่องที่มี * ต้องกรอกทุกช่อง</p>
+      <div class="grid">
+        <label><span>ชื่อจริง *</span><input id="firstName" autocomplete="off"></label>
+        <label><span>นามสกุล *</span><input id="lastName" autocomplete="off"></label>
+        <label><span>ชื่อเล่น *</span><input id="nickname" autocomplete="off"></label>
+        <label><span>อายุ (ปี) *</span><input id="age" type="number" min="3" max="20" inputmode="numeric"></label>
+        <label class="full"><span>กำลังเรียนชั้น *</span>
+          <select id="grade">
+            <option value="">— เลือกระดับชั้น —</option>
+            <optgroup label="อนุบาล"><option>อ.1</option><option>อ.2</option><option>อ.3</option></optgroup>
+            <optgroup label="ประถม"><option>ป.1</option><option>ป.2</option><option>ป.3</option><option>ป.4</option><option>ป.5</option><option>ป.6</option></optgroup>
+            <optgroup label="มัธยม"><option>ม.1</option><option>ม.2</option><option>ม.3</option><option>ม.4</option><option>ม.5</option><option>ม.6</option></optgroup>
+          </select>
+        </label>
+        <label><span>เบอร์โทรติดต่อ *</span>
+          <input id="phone" type="tel" inputmode="numeric" maxlength="12" placeholder="081-234-5678"></label>
+        <label><span>ชื่อผู้ปกครอง</span><input id="parentName" autocomplete="off"></label>
+      </div>
+      <button class="btn" id="submitBtn">กรุณาเลือกรอบเรียนก่อน</button>
+      <div id="bookMsg"></div>
+    </section>
+
+    <!-- เบอร์โทรด้านล่าง เปลี่ยนได้จากหน้าผู้ดูแล -->
+    <section class="card contact">
+      <div class="lb" id="cLabel">สอบถามเพิ่มเติม</div>
+      <a class="ph" id="cPhone" href="#">—</a>
+      <div class="line hide" id="cLine"></div>
+    </section>
+
+    <p class="foot">Native English@Libda • บางกรวย นนทบุรี • <a href="#admin">สำหรับครู</a></p>
+  </div>
+</div>
+
+<!-- ══════════ หน้าผู้ดูแล ══════════ -->
+<div id="pageAdmin" class="hide">
+  <div id="loginView" class="center">
+    <div class="card" style="width:100%;max-width:380px">
+      <h2 style="justify-content:center;margin-bottom:16px">เข้าสู่ระบบผู้ดูแล</h2>
+      <label><span>รหัสผ่าน</span><input id="admPass" type="password" autocomplete="current-password"></label>
+      <button class="btn" id="loginBtn">เข้าสู่ระบบ</button>
+      <div id="loginMsg"></div>
+      <p class="foot"><a href="#">← กลับหน้าจอง</a></p>
+    </div>
+  </div>
+
+  <div id="adminView" class="hide">
+    <header class="top">
+      <h1>แผงควบคุม</h1>
+      <p>Native English@Libda</p>
+    </header>
+    <div class="wrap">
+      <div id="admMsg"></div>
+
+      <section class="card">
+        <h2>เบอร์โทรติดต่อ (แสดงท้ายหน้าจอง)</h2>
+        <p class="hint">แก้ไขแล้วผู้เข้าชมเห็นทันที</p>
+        <div class="grid">
+          <label><span>เบอร์โทร</span><input id="cfgPhone" type="tel" inputmode="numeric" maxlength="12" placeholder="081-234-5678"></label>
+          <label><span>LINE ID</span><input id="cfgLine" placeholder="@libdaenglish"></label>
+          <label class="full"><span>ข้อความหัวเรื่อง</span><input id="cfgLabel" placeholder="สอบถามเพิ่มเติม / นัดเวลาพิเศษ"></label>
+        </div>
+        <button class="btn sm" id="saveCfgBtn">บันทึกข้อมูลติดต่อ</button>
+      </section>
+
+      <section class="card">
+        <h2 id="slotFormTitle">เพิ่มรอบเรียนใหม่</h2>
+        <p class="hint" id="slotFormHint">กำหนดวัน เวลา และจำนวนที่นั่ง</p>
+        <input type="hidden" id="sId">
+        <div class="grid">
+          <label class="full"><span>วันที่ *</span><input id="sDate" type="date"></label>
+          <label><span>เวลาเริ่ม *</span><input id="sStart" type="time"></label>
+          <label><span>เวลาสิ้นสุด *</span><input id="sEnd" type="time"></label>
+          <label><span>วิชา *</span>
+            <select id="sSubject">
+              <option>Phonics</option><option>Reading</option><option>Writing</option>
+              <option>Speaking</option><option>Conversation</option><option>Grammar</option>
+            </select></label>
+          <label><span>ครูผู้สอน *</span><input id="sTeacher" placeholder="Kru John"></label>
+          <label><span>จำนวนที่นั่ง *</span><input id="sCap" type="number" min="1" value="6"></label>
+          <label><span>สถานะ</span>
+            <select id="sStatus"><option value="open">เปิดรับ</option><option value="closed">ปิดรับ</option></select></label>
+          <label class="full"><span>หมายเหตุ</span><input id="sNote" placeholder="ห้อง A / กลุ่มเล็ก"></label>
+        </div>
+        <button class="btn sm" id="saveSlotBtn">บันทึกรอบเรียน</button>
+        <button class="btn sm gray" id="clearSlotBtn" style="margin-left:8px">ล้างฟอร์ม</button>
+      </section>
+
+      <section class="card">
+        <h2>รอบเรียนทั้งหมด</h2>
+        <p class="hint">รอบที่มีผู้จองแล้วจะแก้วัน/เวลาไม่ได้</p>
+        <div class="scroll"><table id="tblSlots"></table></div>
+      </section>
+
+      <section class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <h2 id="bkTitle">รายชื่อผู้จอง</h2>
+          <button class="btn sm green" id="csvBtn" style="margin-top:0">ดาวน์โหลด CSV</button>
+        </div>
+        <div class="scroll" style="margin-top:12px"><table id="tblBookings"></table></div>
+      </section>
+
+      <p class="foot">
+        <a href="#">← ดูหน้าจอง</a> &nbsp;•&nbsp;
+        <button class="lnk" id="logoutBtn">ออกจากระบบ</button>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+const DAYS = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+const LIVE = location.protocol === 'http:' || location.protocol === 'https:';
+const $ = id => document.getElementById(id);
+
+const digits = s => String(s ?? '').replace(/\D/g, '');
+function fmtPhone(raw){
+  const d = digits(raw).slice(0,10);
+  if (d.length <= 3) return d;
+  if (d.length <= 6) return d.slice(0,3)+'-'+d.slice(3);
+  return d.slice(0,3)+'-'+d.slice(3,6)+'-'+d.slice(6);
+}
+const validPhone = s => /^0\d{8,9}$/.test(digits(s));
+function thaiDate(d){
+  const x = new Date(d+'T00:00:00');
+  return `${DAYS[x.getDay()]}ที่ ${x.getDate()}/${x.getMonth()+1}/${x.getFullYear()+543}`;
+}
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function say(el, text, ok){
+  el.innerHTML = text ? `<div class="msg ${ok?'ok':'err'}">${esc(text)}</div>` : '';
+  if (text) el.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+/* ══════════ โหมดจำลองเมื่อเปิดดูในเครื่อง ══════════ */
+const LS = {
+  key:'libda_db_v1',
+  read(){
+    const raw = localStorage.getItem(this.key);
+    if (raw) return JSON.parse(raw);
+    const day = n => { const d = new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); };
+    const seed = {
+      slots:[
+        {id:1,date:day(2),start_time:'16:00',end_time:'17:30',subject:'Phonics',teacher:'Kru John',capacity:6,status:'open',note:'ห้อง A'},
+        {id:2,date:day(3),start_time:'10:00',end_time:'11:30',subject:'Reading',teacher:'Kru Anna',capacity:6,status:'open',note:''}
+      ],
+      bookings:[],
+      settings:{contact_phone:'081-234-5678',contact_label:'สอบถามเพิ่มเติม / นัดเวลาพิเศษ',line_id:'@libdaenglish'},
+      seq:{slot:3, booking:1}
+    };
+    this.write(seed); return seed;
+  },
+  write(d){ localStorage.setItem(this.key, JSON.stringify(d)); }
+};
+const DemoDB = {
+  async settings(){ const d=LS.read(); return {contactPhone:d.settings.contact_phone,contactLabel:d.settings.contact_label,lineId:d.settings.line_id}; },
+  async saveSettings(c){ const d=LS.read(); d.settings={contact_phone:fmtPhone(c.contactPhone),contact_label:c.contactLabel,line_id:c.lineId}; LS.write(d); },
+  async openSlots(){ const d=LS.read(); const today=new Date().toISOString().slice(0,10);
+    return d.slots.filter(s=>s.status==='open'&&s.date>=today)
+      .map(s=>({...s,booked:d.bookings.filter(b=>b.slot_id===s.id&&b.status==='confirmed').length}))
+      .filter(s=>s.booked<s.capacity).sort((a,b)=>(a.date+a.start_time).localeCompare(b.date+b.start_time)); },
+  async book(p){ const d=LS.read();
+    const s=d.slots.find(x=>x.id===p.slotId);
+    if(!s) throw new Error('ไม่พบรอบเรียนนี้');
+    const n=d.bookings.filter(b=>b.slot_id===s.id&&b.status==='confirmed').length;
+    if(n>=s.capacity) throw new Error('รอบนี้เต็มแล้ว');
+    const id=d.seq.booking++;
+    d.bookings.push({id,slot_id:s.id,...p,status:'confirmed',created_at:new Date().toISOString()});
+    LS.write(d); return 'B'+String(id).padStart(4,'0'); },
+  async login(_,pw){ if(pw!=='Libda@2026') throw new Error('รหัสผ่านไม่ถูกต้อง'); sessionStorage.setItem('libda_admin','1'); },
+  async logout(){ sessionStorage.removeItem('libda_admin'); },
+  async isAdmin(){ return sessionStorage.getItem('libda_admin')==='1'; },
+  async allSlots(){ const d=LS.read(); return d.slots.map(s=>({...s,booked:d.bookings.filter(b=>b.slot_id===s.id&&b.status==='confirmed').length})); },
+  async saveSlot(s){ const d=LS.read();
+    if(!s.id){ d.slots.push({...s,id:d.seq.slot++}); LS.write(d); return; }
+    const i=d.slots.findIndex(x=>x.id===s.id); d.slots[i]={...d.slots[i],...s}; LS.write(d); },
+  async delSlot(id){ const d=LS.read(); d.slots=d.slots.filter(s=>s.id!==id); LS.write(d); },
+  async allBookings(){ const d=LS.read();
+    return d.bookings.filter(b=>b.status==='confirmed').map(b=>{
+      const s=d.slots.find(x=>x.id===b.slot_id)||{};
+      return {...b,date:s.date,start_time:s.start_time,end_time:s.end_time,subject:s.subject};
+    }); },
+  async cancelBooking(id){ const d=LS.read(); const b=d.bookings.find(x=>x.id===id); if(b) b.status='cancelled'; LS.write(d); }
+};
+
+/* ══════════ ชั้นข้อมูล : Cloudflare API ══════════ */
+async function api(path, opt = {}) {
+  const res = await fetch('/api/' + path, {
+    credentials: 'same-origin',
+    headers: opt.body ? { 'Content-Type': 'application/json' } : {},
+    ...opt,
+  });
+  const ct = res.headers.get('Content-Type') || '';
+  const data = ct.includes('json') ? await res.json() : null;
+  if (!res.ok) throw new Error((data && data.error) || 'เชื่อมต่อไม่สำเร็จ');
+  return data;
+}
+const LiveDB = {
+  settings:      () => api('settings'),
+  saveSettings:  c  => api('settings', { method:'PUT', body: JSON.stringify(c) }),
+  openSlots:     () => api('slots'),
+  book:          async p => (await api('bookings', { method:'POST', body: JSON.stringify(p) })).bookingCode,
+  login:         (_e, pw) => api('login', { method:'POST', body: JSON.stringify({ password: pw }) }),
+  logout:        () => api('logout', { method:'POST' }),
+  isAdmin:       async () => { try { return (await api('me')).admin; } catch { return false; } },
+  allSlots:      () => api('admin/slots'),
+  saveSlot:      s  => api('admin/slots', { method:'POST', body: JSON.stringify(s) }),
+  delSlot:       id => api('admin/slots?id=' + id, { method:'DELETE' }),
+  allBookings:   () => api('admin/bookings'),
+  cancelBooking: id => api('admin/bookings?id=' + id, { method:'DELETE' }),
+};
+
+const DB = LIVE ? LiveDB : DemoDB;
+if (!LIVE) { $('demoBar').classList.remove('hide'); }
+
+/* ══════════ ควบคุมหน้าจอง ══════════ */
+let picked = null;
+$('phone').addEventListener('input', e => e.target.value = fmtPhone(e.target.value));
+$('cfgPhone').addEventListener('input', e => e.target.value = fmtPhone(e.target.value));
+
+async function loadSlots(){
+  const area = $('slotArea');
+  try{
+    const list = await DB.openSlots();
+    if(!list.length){
+      area.innerHTML = '<p style="background:#f7fafd;border-radius:12px;padding:20px;text-align:center;color:#8aa3bd">ยังไม่มีรอบเรียนเปิดให้จองในขณะนี้</p>';
+      return;
+    }
+    const byDate = {};
+    list.forEach(s => (byDate[s.date] ||= []).push(s));
+    area.innerHTML = Object.entries(byDate).map(([d,arr]) => `
+      <div class="dayhead">${thaiDate(d)}</div>
+      <div class="slots">${arr.map(s=>{
+        const left = s.capacity - s.booked;
+        return `<button type="button" class="slot${picked===s.id?' on':''}" data-id="${s.id}">
+          <div class="t">
+            <span class="time">${esc(s.start_time)}–${esc(s.end_time)}</span>
+            <span class="pill${left<=2?' low':''}">ว่าง ${left}/${s.capacity}</span>
+          </div>
+          <div class="sub">${esc(s.subject)} — ${esc(s.teacher)}${s.note?' • '+esc(s.note):''}</div>
+        </button>`;
+      }).join('')}</div>`).join('');
+
+    area.querySelectorAll('.slot').forEach(b => b.onclick = () => {
+      picked = Number(b.dataset.id);
+      area.querySelectorAll('.slot').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      syncBtn();
+    });
+    if (picked && !list.some(s => s.id === picked)) picked = null;
+    syncBtn();
+  }catch(e){ area.innerHTML = `<div class="msg err">โหลดรอบเรียนไม่สำเร็จ: ${esc(e.message)}</div>`; }
+}
+
+function syncBtn(){
+  $('submitBtn').disabled = !picked;
+  $('submitBtn').textContent = picked ? 'ยืนยันการจอง' : 'กรุณาเลือกรอบเรียนก่อน';
+}
+
+$('submitBtn').onclick = async () => {
+  const p = {
+    slotId: picked,
+    firstName: $('firstName').value.trim(),
+    lastName : $('lastName').value.trim(),
+    nickname : $('nickname').value.trim(),
+    age      : Number($('age').value),
+    grade    : $('grade').value,
+    phone    : digits($('phone').value),
+    parentName: $('parentName').value.trim()
+  };
+  const err =
+    !p.slotId               ? 'กรุณาเลือกรอบเรียน' :
+    !p.firstName            ? 'กรุณากรอกชื่อจริง' :
+    !p.lastName             ? 'กรุณากรอกนามสกุล' :
+    !p.nickname             ? 'กรุณากรอกชื่อเล่น' :
+    !p.age||p.age<3||p.age>20 ? 'อายุต้องอยู่ระหว่าง 3–20 ปี' :
+    !p.grade                ? 'กรุณาเลือกระดับชั้น' :
+    !validPhone(p.phone)    ? 'เบอร์โทรไม่ถูกต้อง เช่น 081-234-5678' : null;
+  if (err) return say($('bookMsg'), err, false);
+
+  $('submitBtn').disabled = true; $('submitBtn').textContent = 'กำลังบันทึก...';
+  try{
+    const code = await DB.book(p);
+    say($('bookMsg'), `จองสำเร็จ! รหัสการจองของคุณคือ ${code} — ทางโรงเรียนจะโทรกลับเพื่อยืนยันครับ`, true);
+    ['firstName','lastName','nickname','age','phone','parentName'].forEach(i => $(i).value = '');
+    $('grade').value = ''; picked = null;
+  }catch(e){ say($('bookMsg'), e.message, false); }
+  await loadSlots();
+};
+
+async function loadContact(){
+  try{
+    const c = await DB.settings();
+    $('cLabel').textContent = c.contactLabel || 'สอบถามเพิ่มเติม';
+    $('cPhone').textContent = c.contactPhone || '—';
+    $('cPhone').href = c.contactPhone ? 'tel:'+digits(c.contactPhone) : '#';
+    $('cLine').innerHTML = c.lineId ? `LINE: <b style="color:var(--navy)">${esc(c.lineId)}</b>` : '';
+    $('cLine').classList.toggle('hide', !c.lineId);
+    $('cfgPhone').value = c.contactPhone; $('cfgLabel').value = c.contactLabel; $('cfgLine').value = c.lineId;
+  }catch(e){}
+}
+
+/* ══════════ ควบคุมหน้าผู้ดูแล ══════════ */
+const EMPTY = {id:'',date:'',start_time:'',end_time:'',subject:'Phonics',teacher:'',capacity:6,status:'open',note:''};
+let cacheSlots = [], cacheBookings = [];
+
+function fillForm(s){
+  $('sId').value=s.id||''; $('sDate').value=s.date||''; $('sStart').value=s.start_time||'';
+  $('sEnd').value=s.end_time||''; $('sSubject').value=s.subject||'Phonics';
+  $('sTeacher').value=s.teacher||''; $('sCap').value=s.capacity||6;
+  $('sStatus').value=s.status||'open'; $('sNote').value=s.note||'';
+  const locked = s.id && s.booked > 0;
+  $('slotFormTitle').textContent = s.id ? `แก้ไขรอบเรียน #${s.id}` : 'เพิ่มรอบเรียนใหม่';
+  $('slotFormHint').textContent  = locked ? `รอบนี้มีผู้จองแล้ว ${s.booked} คน — เปลี่ยนวัน/เวลาไม่ได้` : 'กำหนดวัน เวลา และจำนวนที่นั่ง';
+  ['sDate','sStart','sEnd'].forEach(i => $(i).readOnly = !!locked);
+}
+
+$('clearSlotBtn').onclick = () => { fillForm(EMPTY); say($('admMsg'),'',true); };
+
+$('saveSlotBtn').onclick = async () => {
+  const s = {
+    id: $('sId').value ? Number($('sId').value) : null,
+    date:$('sDate').value, start_time:$('sStart').value, end_time:$('sEnd').value,
+    subject:$('sSubject').value, teacher:$('sTeacher').value.trim(),
+    capacity:Number($('sCap').value), status:$('sStatus').value, note:$('sNote').value.trim()
+  };
+  if(!s.date||!s.start_time||!s.end_time||!s.teacher) return say($('admMsg'),'กรอกวันที่ เวลา และชื่อครูให้ครบ',false);
+  if(s.end_time<=s.start_time) return say($('admMsg'),'เวลาสิ้นสุดต้องหลังเวลาเริ่ม',false);
+  try{ await DB.saveSlot(s); say($('admMsg'),'บันทึกรอบเรียนเรียบร้อย',true); fillForm(EMPTY); refreshAdmin(); }
+  catch(e){ say($('admMsg'), e.message, false); }
+};
+
+$('saveCfgBtn').onclick = async () => {
+  if(!validPhone($('cfgPhone').value)) return say($('admMsg'),'เบอร์โทรไม่ถูกต้อง เช่น 081-234-5678',false);
+  try{
+    await DB.saveSettings({contactPhone:$('cfgPhone').value,contactLabel:$('cfgLabel').value.trim(),lineId:$('cfgLine').value.trim()});
+    say($('admMsg'),'อัปเดตข้อมูลติดต่อเรียบร้อย',true); loadContact();
+  }catch(e){ say($('admMsg'), e.message, false); }
+};
+
+async function refreshAdmin(){
+  try{
+    cacheSlots = await DB.allSlots();
+    $('tblSlots').innerHTML =
+      '<thead><tr><th>วันที่</th><th>เวลา</th><th>วิชา</th><th>ครู</th><th>จอง/ที่นั่ง</th><th>สถานะ</th><th></th></tr></thead><tbody>' +
+      (cacheSlots.length ? cacheSlots.map(s=>`<tr>
+        <td>${thaiDate(s.date)}</td><td>${esc(s.start_time)}–${esc(s.end_time)}</td>
+        <td>${esc(s.subject)}</td><td>${esc(s.teacher)}</td>
+        <td><b>${s.booked}/${s.capacity}</b></td>
+        <td><span class="badge${s.status==='open'?'':' off'}">${s.status==='open'?'เปิดรับ':'ปิดรับ'}</span></td>
+        <td><button class="lnk" data-edit="${s.id}">แก้ไข</button>${
+          s.booked===0?` <button class="lnk red" data-del="${s.id}">ลบ</button>`:''}</td></tr>`).join('')
+        : '<tr><td colspan="7" style="color:#8aa3bd">ยังไม่มีรอบเรียน</td></tr>') + '</tbody>';
+
+    $('tblSlots').querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+      fillForm(cacheSlots.find(s => s.id === Number(b.dataset.edit)));
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+    $('tblSlots').querySelectorAll('[data-del]').forEach(b => b.onclick = async () => {
+      if(!confirm('ลบรอบเรียนนี้?')) return;
+      try{ await DB.delSlot(Number(b.dataset.del)); refreshAdmin(); }
+      catch(e){ say($('admMsg'), e.message, false); }
+    });
+
+    cacheBookings = await DB.allBookings();
+    $('bkTitle').textContent = `รายชื่อผู้จอง (${cacheBookings.length})`;
+    $('tblBookings').innerHTML =
+      '<thead><tr><th>รหัส</th><th>วันเรียน</th><th>เวลา</th><th>ชื่อ-สกุล</th><th>ชื่อเล่น</th><th>อายุ</th><th>ชั้น</th><th>เบอร์โทร</th><th>ผู้ปกครอง</th><th></th></tr></thead><tbody>' +
+      (cacheBookings.length ? cacheBookings.map(b=>`<tr>
+        <td>B${String(b.id).padStart(4,'0')}</td>
+        <td>${b.date?thaiDate(b.date):'-'}</td>
+        <td>${esc(b.start_time)}–${esc(b.end_time)}</td>
+        <td>${esc(b.first_name)} ${esc(b.last_name)}</td>
+        <td>${esc(b.nickname)}</td><td>${b.age}</td><td>${esc(b.grade)}</td>
+        <td><a href="tel:${digits(b.phone)}">${fmtPhone(b.phone)}</a></td>
+        <td>${esc(b.parent_name)}</td>
+        <td><button class="lnk red" data-cancel="${b.id}">ยกเลิก</button></td></tr>`).join('')
+        : '<tr><td colspan="10" style="color:#8aa3bd">ยังไม่มีผู้จอง</td></tr>') + '</tbody>';
+
+    $('tblBookings').querySelectorAll('[data-cancel]').forEach(b => b.onclick = async () => {
+      if(!confirm('ยกเลิกการจองรายการนี้?')) return;
+      await DB.cancelBooking(Number(b.dataset.cancel)); refreshAdmin();
+    });
+  }catch(e){ say($('admMsg'),'โหลดข้อมูลไม่สำเร็จ: '+e.message,false); }
+}
+
+$('csvBtn').onclick = () => {
+  const head = ['รหัสการจอง','วันที่เรียน','เวลา','วิชา','ชื่อจริง','นามสกุล','ชื่อเล่น','อายุ','ระดับชั้น','เบอร์โทรติดต่อ','ชื่อผู้ปกครอง','วันที่จอง'];
+  const q = v => `"${String(v ?? '').replace(/"/g,'""')}"`;
+  const rows = cacheBookings.map(b => [
+    'B'+String(b.id).padStart(4,'0'), b.date, `${b.start_time}-${b.end_time}`, b.subject,
+    b.first_name, b.last_name, b.nickname, b.age, b.grade, fmtPhone(b.phone), b.parent_name,
+    new Date(b.created_at).toLocaleString('th-TH',{timeZone:'Asia/Bangkok'})
+  ].map(q).join(','));
+  const blob = new Blob(['\uFEFF'+[head.join(','),...rows].join('\n')],{type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `bookings-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(a.href);
+};
+
+$('loginBtn').onclick = async () => {
+  try{
+    await DB.login('', $('admPass').value);
+    $('admPass').value=''; route();
+  }catch(e){ say($('loginMsg'), e.message, false); }
+};
+$('admPass').addEventListener('keydown', e => e.key === 'Enter' && $('loginBtn').click());
+$('logoutBtn').onclick = async () => { await DB.logout(); location.hash = ''; };
+
+async function route(){
+  const isAdmin = location.hash === '#admin';
+  $('pageBook').classList.toggle('hide', isAdmin);
+  $('pageAdmin').classList.toggle('hide', !isAdmin);
+  window.scrollTo(0,0);
+  if (!isAdmin) { loadSlots(); loadContact(); return; }
+  const authed = await DB.isAdmin();
+  $('loginView').classList.toggle('hide', authed);
+  $('adminView').classList.toggle('hide', !authed);
+  if (authed) { await loadContact(); fillForm(EMPTY); refreshAdmin(); }
+}
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
